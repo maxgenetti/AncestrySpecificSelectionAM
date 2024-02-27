@@ -1,3 +1,8 @@
+VCFs generated using GATK 4.2.5 or later require sites that are no-calls to be formatted as "." instead of the reference allele in the genotype field. This can be done using the following bcftools command: 
+
+bcftools +setGT example.vcf.gz -- -t q -n . -i 'FMT/DP=0'
+
+
 Directory PR contains the sample and panel files used to run Ancstry_HMM and AHMM-S on the Puerto Rican population of Africanized honey bee. The marginals are the population average of the Ancestry_HMM results. The ahmms-forw files are the AHMMS results for selection on African ancestry. The ahmms-rev files are the AHMMS results for selection on European ancestry.
 
 Directory MA contains the sample and panel files used to run Ancstry_HMM and AHMM-S on the Mesoamerican population of Africanized honey bee. The marginals are the population average of the Ancestry_HMM results. The ahmms-forw files are the AHMMS results for selection on African ancestry. The ahmms-rev files are the AHMMS results for selection on European ancestry.
