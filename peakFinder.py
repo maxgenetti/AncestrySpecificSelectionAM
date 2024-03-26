@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Max Genetti (mgenetti)
+# Maximilian Genetti (maxgenetti@gmail.com)
 
 import numpy as np
 import scipy
