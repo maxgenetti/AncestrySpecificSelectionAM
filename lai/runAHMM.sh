@@ -1,5 +1,7 @@
 #!/bin/sh
 # Maximilian Genetti (maxgenetti@gmail.com)
+# Example command: runAHMM.sh 1 2 3 format.tsv
+
 
 IFS=$'\t'
 while IFS=$'\t' read -r key value; do
