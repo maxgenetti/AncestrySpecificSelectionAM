@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# Maximilian Genetti (maxgenetti@gmail.com)
+
 import os
 from collections import defaultdict
 import argparse
