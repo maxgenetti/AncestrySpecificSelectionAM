@@ -1,4 +1,5 @@
 #!/bin/sh
+# Maximilian Genetti (maxgenetti@gmail.com)
 
 IFS=$'\t'
 while IFS=$'\t' read -r key value; do
@@ -6,14 +7,9 @@ while IFS=$'\t' read -r key value; do
 done < "$4"
 
 workDir=$(pwd)
-dataDir="~/junkyard_Apis/vcfamel45"
-sub="D"
-
-#Dry Run Values
-p=0.69
-q=0.31
-g=69
-s=0.0420
+dataDir="~/scratch/mgenetti/vcfamel45"
+sub="final"
+threads=30
 
 ###Deletes command files and then starts
 rm -f panels.${sub}.txt
@@ -45,7 +41,7 @@ for dist in "${dists[@]}"; do
 					mkdir -p "${outDirPR}/ahmm1/chr${chrom}"
 					mkdir -p "${outDirMA}/ahmm1/chr${chrom}"
 					### makes panel files
-					echo "vcf2aHMM_morgans.py --vcf ${dataDir}/chr${chrom}.vcf --dist ${dist} --pop ${dataDir}/ahmm.pop --distM ${mist} --map ${dataDir}/apis.map ${geno}--minGTP 25 --minGTA 0.8 --minDP 0.8 --minDif $diff 1>${outDirPR}/chr${chrom}.all.panel 2>$outDirPR/chr${chrom}.panel.err " >>panels.${sub}.txt
+					echo "vcf2aHMM.py --vcf ${dataDir}/chr${chrom}.vcf --dist ${dist} --pop ${dataDir}/ahmm.pop --distM ${mist} --map ${dataDir}/apis.map ${geno}--minGTP 25 --minGTA 0.8 --minDP 0.8 --minDif $diff 1>${outDirPR}/chr${chrom}.all.panel 2>$outDirPR/chr${chrom}.panel.err " >>panels.${sub}.txt
 					echo "awk '{for (i=1; i<=67; i++) printf \$i \"\t\"; print \"\"}' ${outDirPR}/chr${chrom}.all.panel >${outDirPR}/chr${chrom}.panel" >>panels-2.${sub}.txt
 					echo "awk '{for (i=1; i<=7; i++) printf \$i \"	\"; for (i=68; i<=NF; i++) printf \$i \"	\"; print \"\"}' ${outDirPR}/chr${chrom}.all.panel >${outDirMA}/chr${chrom}.panel" >>panels-2.${sub}.txt
 					### makes panel files with swapped parentals
@@ -63,31 +59,31 @@ wait
 
 ###Executes if arg added, defaults to DRY RUN
 if [ "$1" = "1" ]; then
-	parallel --joblog panels.${sub}.log -j 30 <panels.${sub}.txt 2>panels.${sub}.err
+	parallel --joblog panels.${sub}.log -j $threads <panels.${sub}.txt 2>panels.${sub}.err
 	wait
 	cd $workDir
-	parallel --joblog panels-2.${sub}.log -j 60 <panels-2.${sub}.txt 2>panels-2.${sub}.err
+	parallel --joblog panels-2.${sub}.log -j $threads <panels-2.${sub}.txt 2>panels-2.${sub}.err
 	wait
 	cd $workDir
-	parallel --joblog panels-3.${sub}.log -j 60 <panels-3.${sub}.txt 2>panels-3.${sub}.err
+	parallel --joblog panels-3.${sub}.log -j $threads <panels-3.${sub}.txt 2>panels-3.${sub}.err
 	wait
-	echo "Finished Making panels"
+	echo 'Finished Making panels'
 	cd $workDir
-	parallel --joblog ahmm1.${sub}.log -j 60 <ahmm1.${sub}.txt 2>ahmm1.${sub}.err
+	parallel --joblog ahmm1.${sub}.log -j $threads <ahmm1.${sub}.txt 2>ahmm1.${sub}.err
 	wait
-	echo "Finished ahmm1.${sub}.txt"
+	echo 'Finished ahmm1.${sub}.txt'
 else
 	echo "
-	parallel --joblog panels.${sub}.log -j 60 <panels.${sub}.txt 2>panels.${sub}.err
+	parallel --joblog panels.${sub}.log -j $threads <panels.${sub}.txt 2>panels.${sub}.err
 	wait
 	cd $workDir
-	parallel --joblog panels-2.${sub}.log -j 60 <panels-2.${sub}.txt 2>panels-2.${sub}.err
+	parallel --joblog panels-2.${sub}.log -j $threads <panels-2.${sub}.txt 2>panels-2.${sub}.err
 	wait
-	echo "Finished Making panels"
+	echo 'Finished Making panels'
 	cd $workDir
-	parallel --joblog ahmm1.${sub}.log -j 60 <ahmm1.${sub}.txt 2>ahmm1.${sub}.err
+	parallel --joblog ahmm1.${sub}.log -j $threads <ahmm1.${sub}.txt 2>ahmm1.${sub}.err
 	wait
-	echo "Finished ahmm1.${sub}.txt"
+	echo 'Finished ahmm1.${sub}.txt'
 	"
 fi
 
@@ -128,15 +124,15 @@ done
 ###Executes if arg added, defaults to DRY RUN
 if [ "$2" = "2" ]; then
 	cd $workDir
-	parallel --joblog ahmm2.${sub}.log -j 60 <ahmm2.${sub}.txt 2>ahmm2.${sub}.err
+	parallel --joblog ahmm2.${sub}.log -j $threads <ahmm2.${sub}.txt 2>ahmm2.${sub}.err
 	wait
-	echo "Finished ahmm2.${sub}.txt"
+	echo 'Finished ahmm2.${sub}.txt'
 else
 	echo "
 	cd $workDir
-	parallel --joblog ahmm2.${sub}.log -j 60 <ahmm2.${sub}.txt 2>ahmm2.${sub}.err
+	parallel --joblog ahmm2.${sub}.log -j $threads <ahmm2.${sub}.txt 2>ahmm2.${sub}.err
 	wait
-	echo "Finished ahmm2.${sub}.txt"
+	echo 'Finished ahmm2.${sub}.txt'
 	"
 fi
 
@@ -195,18 +191,18 @@ wait
 ###Executes ahmms if arg added, defaults to DRY RUN
 if [ "$3" = "4" ]; then
 	cd $workDir
-	source /home/mgenetti/bin/miniconda3/bin/activate ahmms
-	parallel --joblog ahmms.${sub}.log -j 60 <ahmms.${sub}.txt 2>ahmms.${sub}.err
+	conda activate ahmms
+	parallel --joblog ahmms.${sub}.log -j $threads <ahmms.${sub}.txt 2>ahmms.${sub}.err
 	wait
-	echo "DONE"
-	source /home/mgenetti/bin/miniconda3/bin/deactivate
+	echo 'DONE'
+	conda deactivate
 else
 	echo "
 	cd $workDir
-	source /home/mgenetti/bin/miniconda3/bin/activate ahmms
-	parallel --joblog ahmms.${sub}.log -j 60 <ahmms.${sub}.txt 2>ahmms.${sub}.err
+	conda activate ahmms
+	parallel --joblog ahmms.${sub}.log -j $threads <ahmms.${sub}.txt 2>ahmms.${sub}.err
 	wait
-	echo "DONE"
-	source /home/mgenetti/bin/miniconda3/bin/deactivate
+	echo 'DONE'
+	conda deactivate
 	"
 fi
