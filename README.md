@@ -1,8 +1,17 @@
+Ancestry_Amel.yml :
+  YAML file to create the conda enviroment required to run the following analyses.
+  Example of how to create and activate conda enviroment:
+  conda env create -f Ancestry_Amel.yml
+  conda activate Ancestry_Amel
+
 Directory PR:
   Contains the sample and panel files used to run Ancstry_HMM and AHMM-S on the Puerto Rican population of Africanized honey bee. The marginals are the population average of the Ancestry_HMM results. The ahmms-forw files are the AHMMS results for selection on African ancestry. The ahmms-rev files are the AHMMS results for selection on European ancestry.
 
 Directory MA:
   Contains the sample and panel files used to run Ancstry_HMM and AHMM-S on the Mesoamerican population of Africanized honey bee. The marginals are the population average of the Ancestry_HMM results. The ahmms-forw files are  the AHMMS results for selection on African ancestry. The ahmms-rev files are the AHMMS results for selection on European ancestry.
+
+Directory GO_Enrichment :
+  Contains our implentation of GO Enrichement Analyses. Given an panel file, relvant annotations, and number of identified peaks, it will randomly sample peaks from AIMs in non-overlapping genomic regions, consistent with our peak filtering criteria, 10 million times to produce GO term distributions for each ancestry-specific selection scenario.
 
 Directory VariantCalling:
   VCFs generated using GATK 4.2.5 or later require sites that are no-calls to be formatted as "." instead of the reference allele in the genotype field. This can be done using the following bcftools command: 
