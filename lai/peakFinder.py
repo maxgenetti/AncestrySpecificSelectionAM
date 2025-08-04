@@ -49,7 +49,6 @@ for direction in directions :
         
         # Generate sample data
         for chrom in chroms.keys() : #['1','14'] : #
-            plt.axvline(x=offset, color='y', linestyle='-')
             pos_values = []
             gen_pos = []
             sel_values = []
@@ -64,7 +63,7 @@ for direction in directions :
                     lnl_values.append(max(float(l[2]),0))
                 fileP.close()
 
-            ahmms_len=len(lnl_values1)
+            ahmms_len=len(lnl_values)
 
             lnl_prom = 0.5*np.array(lnl_values)            
 
@@ -76,7 +75,7 @@ for direction in directions :
                 a = int(p2["left_ips"][p])  #inclusive
                 b = int(p2["right_ips"][p]) #inclusive
 
-                if lnl_values[p1[p]] > scipy.stats.chi2.ppf(1 - (0.05/67329),1) :
+                if lnl_values[p1[p]] > lnl_cutoff :
                     rh1=1-(lnl_cutoff/lnl_values[p1[p]])
                     prom = p2['prominences'][p]
                     lnl = lnl_values[p1[p]]
@@ -93,9 +92,6 @@ for direction in directions :
             full_sel += sel_values
             full_lnl += lnl_values
             full_pos += gen_pos
-            for i in range(1,3):
-                plt.subplot(2,1,i)
-                plt.axvline(x=offset, color='k', linestyle='-')
 
         f = open(f'/{dataDir}/{population}/peaks-{direction}.txt', "w")
         print(f"{population}-{direction} : {len(peaks)}")
